@@ -247,6 +247,12 @@ Total duration: 2+4+3+2+6+4 = 21 time units
 
 ## Theorem 1: State-Based Capacity
 
+**Notation note:**
+- W⁻ᵗ means 1/Wᵗ (W to the power of -t)
+- Examples: W⁻¹ = 1/W, W⁻² = 1/W², W⁻³ = 1/W³
+- Represents "discount factor" for a symbol of duration t
+- Longer durations → smaller contribution to the sum
+
 **Given:**
 - b(s)ᵢⱼ = duration of sth symbol allowed in state i leading to state j
 - δᵢⱼ = 1 if i=j, else 0
@@ -268,6 +274,117 @@ Where W is the largest real root of:
 ```
 
 Expands to the characteristic equation found earlier.
+
+---
+
+### Understanding the Formula with Simple Examples
+
+**Example 1: Single state, two symbols**
+
+Suppose we have:
+- 1 state only
+- Symbol A: duration 1
+- Symbol B: duration 2
+- All sequences allowed
+
+**Build the matrix:**
+- State 1 to State 1 via A (duration 1): contributes W⁻¹
+- State 1 to State 1 via B (duration 2): contributes W⁻²
+
+**Determinant equation:**
+```
+|W⁻¹ + W⁻² - 1| = 0
+```
+
+This simplifies to:
+```
+W⁻¹ + W⁻² = 1
+```
+
+Multiply by W²:
+```
+W + 1 = W²
+W² - W - 1 = 0
+```
+
+Solve: W = (1 + √5)/2 ≈ 1.618 (golden ratio!)
+
+**Capacity:** C = log(1.618) ≈ 0.694 bits per time unit
+
+---
+
+**Example 2: Two states with constraints**
+
+Setup:
+- State 1: can send symbol A (duration 2) → stay in State 1
+- State 1: can send symbol B (duration 3) → go to State 2
+- State 2: can send symbol A (duration 2) → go back to State 1
+
+**Build the matrix (2×2):**
+
+Position (1,1): State 1 → State 1
+- Symbol A with duration 2: contributes W⁻²
+- Entry: W⁻² - 1 (subtract δ₁₁ = 1)
+
+Position (1,2): State 1 → State 2
+- Symbol B with duration 3: contributes W⁻³
+- Entry: W⁻³ - 0 = W⁻³
+
+Position (2,1): State 2 → State 1
+- Symbol A with duration 2: contributes W⁻²
+- Entry: W⁻² - 0 = W⁻²
+
+Position (2,2): State 2 → State 2
+- No symbols go from State 2 to itself
+- Entry: 0 - 1 = -1
+
+**Determinant:**
+```
+| W⁻²-1    W⁻³  |
+| W⁻²      -1   | = 0
+```
+
+Expand:
+```
+(W⁻²-1)(-1) - (W⁻³)(W⁻²) = 0
+-W⁻² + 1 - W⁻⁵ = 0
+1 = W⁻² + W⁻⁵
+```
+
+Multiply by W⁵:
+```
+W⁵ = W³ + 1
+W⁵ - W³ - 1 = 0
+```
+
+Solve numerically for W, then C = log W
+
+---
+
+**Step-by-step guide to apply Theorem 1:**
+
+1. **Draw the state diagram**
+   - Identify all states
+   - Mark allowed symbols and their durations
+   - Show state transitions
+
+2. **Create the matrix**
+   - Size: m×m (m = number of states)
+   - For each position (i,j):
+     - Sum W⁻ᵇ for all symbols going from state i to state j
+     - If i=j, subtract 1
+
+3. **Set up determinant equation**
+   - |Matrix| = 0
+
+4. **Expand and simplify**
+   - Get polynomial equation in W
+
+5. **Solve for W**
+   - Find largest positive real root
+
+6. **Calculate capacity**
+   - C = log W (or log₂ W for bits)
 
 ---
 
