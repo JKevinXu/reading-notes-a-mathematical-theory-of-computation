@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>香农《通信的数学理论》｜第二章：信息源</title>
+<style>
+:root{--ink:#172033;--muted:#5f6b7a;--paper:#f7f8fc;--card:#fff;--blue:#315efb;--blue2:#eaf0ff;--orange:#f08a4b;--green:#16866a;--line:#e3e7ef;--shadow:0 12px 35px rgba(28,43,77,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7}main{max-width:1080px;margin:auto;padding:28px 20px 60px}.hero{background:linear-gradient(135deg,#172a62,#315efb 65%,#6c8dff);color:#fff;border-radius:24px;padding:42px 42px 36px;box-shadow:var(--shadow)}.eyebrow{letter-spacing:.12em;text-transform:uppercase;opacity:.78;font-size:13px}.hero h1{font-size:clamp(30px,5vw,56px);line-height:1.15;margin:12px 0}.hero p{font-size:18px;max-width:760px;margin:12px 0 0;color:#eaf0ff}.pill{display:inline-block;background:rgba(255,255,255,.16);padding:4px 12px;border-radius:99px;margin-top:20px;font-size:14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:22px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}.wide{grid-column:1/-1}.card h2{font-size:24px;margin:0 0 10px}.card h3{margin:20px 0 6px;color:var(--blue)}.lead{font-size:19px}.muted{color:var(--muted)}.formula{background:#101a30;color:#eaf0ff;border-radius:12px;padding:15px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:17px;overflow:auto;margin:14px 0}.comparison{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.level{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fbfcff}.level strong{display:block;color:var(--blue);font-size:18px}.level span{font-size:13px;color:var(--muted)}.arrow{color:var(--orange);font-size:24px;text-align:center;margin:8px}.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:20px 0}.node{background:var(--blue2);color:#1d3ea8;border:1px solid #cbd8ff;border-radius:12px;padding:12px 16px;font-weight:700}.arr{color:var(--orange);font-size:25px}.example{background:#fff8ee;border-left:4px solid var(--orange);padding:14px 18px;border-radius:8px;margin:14px 0}.tip{background:#edfaf6;border-left:4px solid var(--green);padding:14px 18px;border-radius:8px}.quiz button{border:0;background:var(--blue);color:#fff;border-radius:9px;padding:9px 14px;cursor:pointer;font-size:15px;margin-top:8px}.answer{display:none;background:var(--blue2);padding:12px 15px;border-radius:9px;margin-top:10px}.answer.show{display:block}.tag{display:inline-block;padding:3px 9px;border-radius:99px;background:#eef1f6;color:var(--muted);font-size:13px;margin:3px}.footer{color:var(--muted);font-size:13px;margin-top:25px;text-align:center}@media(max-width:720px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.comparison{grid-template-columns:1fr}.hero{padding:30px 24px}}
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+<div class="eyebrow">Claude Shannon · A Mathematical Theory of Communication</div>
+<h1>第二章：信息源</h1>
+<p>信息源不是“装信息的地方”，而是一个按照某种概率和规律，连续产生符号的系统。</p>
+<span class="pill">本页目标：看懂统计结构如何带来压缩</span>
+</section>
+
+<div class="grid">
+<section class="card wide">
+<h2>先记住一句话</h2>
+<p class="lead">信息源的关键，不只是“有哪些符号”，而是“这些符号按照什么概率、以什么依赖关系产生”。</p>
+<div class="tip"><strong>和第一章的连接：</strong>第一章研究一次选择有多少不确定性；这一章研究信息连续产生时，前后符号的统计规律如何改变平均信息量。</div>
+</section>
+
+<section class="card">
+<h2>1. 为什么统计结构重要？</h2>
+<p>如果五个字符完全等概率、互不影响，序列会很随机：</p>
+<div class="formula">P(A)=P(B)=P(C)=P(D)=P(E)=0.2</div>
+<p>如果 A 更常见，预测就更容易，平均不确定性也会下降。</p>
+<div class="example"><strong>自然语言不是白噪声。</strong><br>英文中 E 比 Q 常见，TH 比 XP 常见。规律越多，就越能压缩。</div>
+</section>
+
+<section class="card">
+<h2>2. 编码怎样利用规律？</h2>
+<p>把短编码留给高频内容，把长编码留给低频内容。</p>
+<div class="flow"><div class="node">高频符号<br><small>短编码</small></div><div class="arr">→</div><div class="node">平均传输更快</div></div>
+<p>例如摩尔斯电码：E 只需要一个点；罕见字母通常需要更长编码。常用词和常用句子还可以被编码成更短的整体代码。</p>
+</section>
+
+<section class="card wide">
+<h2>3. 信息源的四个层次</h2>
+<div class="comparison">
+<div class="level"><strong>零阶模型</strong><span>字符等概率、彼此独立</span><p>完全忽略统计结构。</p></div>
+<div class="level"><strong>频率模型</strong><span>字符独立，但概率不同</span><p>知道 E 比 W 常见。</p></div>
+<div class="level"><strong>马尔可夫模型</strong><span>下一个字符依赖前面字符</span><p>知道 TH 比 XP 常见。</p></div>
+</div>
+<div class="arrow">↓ 依赖关系越来越丰富</div>
+<div class="comparison">
+<div class="level"><strong>n-gram</strong><span>看前 n−1 个符号预测下一个</span><p>bigram、trigram 都属于这一类。</p></div>
+<div class="level"><strong>词级模型</strong><span>把词或短语当作符号</span><p>可以表达更高层的语言结构。</p></div>
+<div class="level"><strong>代价</strong><span>模型越复杂，参数越多</span><p>更准确，但更难估计。</p></div>
+</div>
+</section>
+
+<section class="card">
+<h2>4. 马尔可夫模型</h2>
+<p>记号 <code>pᵢ(j)</code> 表示：</p>
+<div class="formula">当前是 i 时，下一个符号是 j 的概率</div>
+<p>例如：</p>
+<div class="formula">p_A(B)=0.8</div>
+<p>意思是：如果当前字符是 A，下一个字符有 80% 的概率是 B。</p>
+<div class="example"><strong>联合概率：</strong><br>如果 p(A)=0.3，p_A(B)=0.8，那么 p(A,B)=0.3×0.8=0.24。</div>
+</section>
+
+<section class="card">
+<h2>5. 概率必须守恒</h2>
+<p>从任意当前字符 i 出发，下一步总会去某个字符：</p>
+<div class="formula">Σⱼ pᵢ(j)=1</div>
+<p>所有字符频率加起来是 1：</p>
+<div class="formula">Σᵢ p(i)=1</div>
+<p>所有二元组概率加起来也是 1：</p>
+<div class="formula">Σᵢ,ⱼ p(i,j)=1</div>
+</section>
+
+<section class="card wide">
+<h2>6. 为什么知道前文后，不确定性会下降？</h2>
+<div class="flow"><div class="node">不知道前文</div><div class="arr">→</div><div class="node">下一个字符较难预测</div></div>
+<div class="flow"><div class="node">知道前文</div><div class="arr">→</div><div class="node">候选概率重新分布</div><div class="arr">→</div><div class="node">平均不确定性下降</div></div>
+<div class="tip"><strong>信息论表达：</strong>通常有 H(下一个字符｜前文) ≤ H(下一个字符)。前文提供了额外信息，因此不会增加剩余不确定性。</div>
+</section>
+
+<section class="card wide quiz">
+<h2>7. 自测题</h2>
+<p><span class="tag">问题 1</span> A 的概率是 0.4，B 的概率是 0.1，但每个字符与前一个字符独立。这是哪种模型？</p>
+<button onclick="toggle('a1')">显示答案</button><div id="a1" class="answer"><strong>答案：</strong>字符独立但概率不同的频率模型（一阶近似）。</div>
+<p><span class="tag">问题 2</span> 如果下一个字符依赖前一个字符，例如 p<sub>A</sub>(B)=0.8，这是哪种模型？</p>
+<button onclick="toggle('a2')">显示答案</button><div id="a2" class="answer"><strong>答案：</strong>一阶马尔可夫模型，也可以理解为使用二元组统计的模型。</div>
+<p><span class="tag">问题 3</span> 已知 p(A)=0.3，p<sub>A</sub>(B)=0.8，p(A,B) 等于多少？</p>
+<button onclick="toggle('a3')">显示答案</button><div id="a3" class="answer"><strong>答案：</strong>0.3×0.8=0.24。</div>
+</section>
+
+<section class="card wide">
+<h2>本章总结</h2>
+<ol>
+<li>信息源是连续产生符号的随机过程。</li>
+<li>自然语言具有统计结构，因此可以压缩。</li>
+<li>零阶模型忽略结构；频率模型只看字符频率；马尔可夫模型考虑前文。</li>
+<li>n-gram 用前面多个符号预测下一个符号。</li>
+<li>模型越能捕捉依赖关系，预测通常越好，但需要估计的概率也越多。</li>
+</ol>
+<div class="example"><strong>最终直觉：</strong>压缩不是把内容“变少”，而是把可预测的部分用更短的表示，把真正意外的部分留下来。</div>
+</section>
+</div>
+<p class="footer">来源：JKevinXu/reading-notes-a-mathematical-theory-of-computation · information-sources.md</p>
+</main>
+<script>function toggle(id){document.getElementById(id).classList.toggle('show')}</script>
+</body>
+</html>
